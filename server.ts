@@ -30,7 +30,8 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`>>> SERVER START: Port ${PORT} (NODE_ENV: ${process.env.NODE_ENV})`);
+    console.log(`>>> WORKSPACE ROOT: ${process.cwd()}`);
   });
 }
 

@@ -7,6 +7,16 @@ import { auth } from './lib/firebase';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { THEME } from './lib/theme';
 
+// Views
+import { DashboardView } from './components/DashboardView';
+import { ProjectList } from './components/ProjectList';
+import { KanbanBoard } from './components/KanbanBoard';
+import { NotePad } from './components/NotePad';
+import { ReportsView } from './components/ReportsView';
+import { CalendarView } from './components/CalendarView';
+import { TeamView } from './components/TeamView';
+import { SettingsView } from './components/SettingsView';
+
 export default function App() {
   const { user, loading, projects, tasks, notes, addProject, addTask, updateTask, addNote } = useFirebase();
   const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
@@ -29,9 +39,18 @@ export default function App() {
         await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (err: any) {
-      setError(err.message.includes('auth/invalid-credential') 
-        ? 'Invalid credentials provided.' 
-        : 'Authentication failed. Please check your data.');
+      console.error("Auth Error:", err);
+      if (err.code === 'auth/operation-not-allowed') {
+        setError('Email/Password login is not enabled in the Firebase Console. Please enable it to use this feature.');
+      } else if (err.code === 'auth/invalid-credential') {
+        setError('Invalid credentials provided. Check your email and password.');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Try logging in.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password is too weak. Minimum 6 characters required.');
+      } else {
+        setError(err.message || 'Authentication failed. Please check your connection.');
+      }
     } finally {
       setIsAuthenticating(false);
     }
