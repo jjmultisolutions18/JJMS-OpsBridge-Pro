@@ -1,6 +1,6 @@
 {
-  "name": "Firebase Starter App",
-  "description": "A robust foundation for building web applications with real-time database capabilities and secure authentication using Firebase.",
+  "name": "ProjectPilot",
+  "description": "A comprehensive project and task management command center with AI-driven insights, real-time collaboration, and professional reporting.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

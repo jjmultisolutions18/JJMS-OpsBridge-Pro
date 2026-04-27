@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "User profile records.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin", "User"] },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "team": {
+      "title": "Team",
+      "description": "A collaborative organizational unit.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId", "createdAt"]
+    },
+    "membership": {
+      "title": "Membership",
+      "description": "Links a user to a team.",
+      "type": "object",
+      "properties": {
+        "teamId": { "type": "string" },
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["Owner", "Member"] },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["teamId", "userId", "role"]
+    },
+    "project": {
+      "title": "Project",
+      "description": "A project managed by a user or team.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string", "enum": ["Work", "Business", "Personal", "Client", "Programme"] },
+        "status": { "type": "string", "enum": ["Not Started", "In Progress", "Delayed", "Completed", "On Hold"] },
+        "priority": { "type": "string", "enum": ["Low", "Medium", "High", "Critical"] },
+        "userId": { "type": "string" },
+        "teamId": { "type": "string", "description": "Optional shared team context." },
+        "progress": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "userId", "createdAt"]
+    },
+    "task": {
+      "title": "Task",
+      "description": "A protocol item.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "projectId": { "type": "string" },
+        "userId": { "type": "string" },
+        "status": { "type": "string", "enum": ["Backlog", "To Do", "In Progress", "Waiting", "Done"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "status", "userId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "user", "description": "Global user directory" },
+    "/teams/{teamId}": { "schema": "team", "description": "Team definitions" },
+    "/memberships/{membershipId}": { "schema": "membership", "description": "Team membership cross-reference" },
+    "/projects/{projectId}": { "schema": "project", "description": "Project data" },
+    "/tasks/{taskId}": { "schema": "task", "description": "Task data" }
+  }
+}
