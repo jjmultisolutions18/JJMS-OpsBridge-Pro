@@ -14,7 +14,13 @@ import {
   getDocs,
   getDoc
 } from 'firebase/firestore';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { 
+  onAuthStateChanged, 
+  User, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  updateProfile
+} from 'firebase/auth';
 import { auth, db, handleFirestoreError, OperationType } from './firebase';
 import { Project, Task, Note } from '../types';
 
