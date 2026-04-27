@@ -11,7 +11,8 @@ import {
   serverTimestamp,
   orderBy,
   setDoc,
-  getDocs
+  getDocs,
+  getDoc
 } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db, handleFirestoreError, OperationType } from './firebase';
@@ -27,16 +28,24 @@ export function useFirebase() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
+        // Fetch full profile for role
+        const userDoc = await getDoc(doc(db, 'users', u.uid));
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        
         // Register user
         await setDoc(doc(db, 'users', u.uid), {
           uid: u.uid,
           email: u.email,
           displayName: u.displayName,
           photoURL: u.photoURL,
-          lastLogin: serverTimestamp()
+          lastLogin: serverTimestamp(),
+          role: userData?.role || 'User'
         }, { merge: true });
+
+        setUser({ ...u, ...userData });
+      } else {
+        setUser(null);
       }
-      setUser(u);
       setLoading(false);
     });
     return unsub;

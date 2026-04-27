@@ -27,19 +27,21 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow get: if isSignedIn(); // Allow discovery for team invites
-      allow create, update: if isOwner(userId);
+      allow get: if isSignedIn(); 
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
     }
 
     match /teams/{teamId} {
       allow get: if isTeamMember(teamId);
       allow create: if isSignedIn();
-      allow update: if isTeamMember(teamId) && get(/databases/$(database)/documents/memberships/$(teamId + '_' + request.auth.uid)).data.role == 'Owner';
+      allow update: if isTeamMember(teamId) && (get(/databases/$(database)/documents/memberships/$(teamId + '_' + request.auth.uid)).data.role == 'Owner' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin');
     }
 
     match /memberships/{membershipId} {
       allow get: if isSignedIn();
-      allow create: if isSignedIn(); // To invite/join
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (get(/databases/$(database)/documents/memberships/$(incoming().teamId + '_' + request.auth.uid)).data.role == 'Owner' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin');
       allow delete: if isSignedIn(); 
     }
 
@@ -47,7 +49,7 @@ service cloud.firestore {
       allow list, get: if isSignedIn() && canAccessProject(resource.data);
       allow create: if isSignedIn();
       allow update: if isSignedIn() && canAccessProject(resource.data);
-      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+      allow delete: if isSignedIn() && (isOwner(resource.data.userId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin');
     }
 
     match /tasks/{taskId} {
@@ -55,6 +57,13 @@ service cloud.firestore {
       allow create: if isSignedIn();
       allow update: if isSignedIn() && canAccessTask(resource.data);
       allow delete: if isSignedIn() && canAccessTask(resource.data);
+    }
+
+    match /notes/{noteId} {
+      allow list, get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
   }
 }

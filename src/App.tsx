@@ -14,6 +14,7 @@ import { NotePad } from './components/NotePad';
 import { ReportsView } from './components/ReportsView';
 import { CalendarView } from './components/CalendarView';
 import { TeamView } from './components/TeamView';
+import { SettingsView } from './components/SettingsView';
 
 export default function App() {
   const { user, loading, projects, tasks, notes, addProject, addTask, updateTask, addNote } = useFirebase();
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="/kanban" element={<KanbanBoard tasks={tasks} onUpdate={updateTask} onAdd={addTask} />} />
               <Route path="/calendar" element={<CalendarView tasks={tasks} />} />
               <Route path="/teams" element={<TeamView />} />
+              <Route path="/settings" element={<SettingsView />} />
               <Route path="/notes" element={<NotePad notes={notes} onAdd={addNote} />} />
               <Route path="/reports" element={<ReportsView projects={projects} tasks={tasks} />} />
               <Route path="*" element={<Navigate to="/" />} />

@@ -66,6 +66,17 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["title", "status", "userId", "createdAt"]
+    },
+    "note": {
+      "title": "Note",
+      "description": "Quick tactical notes.",
+      "type": "object",
+      "properties": {
+        "content": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["content", "userId", "createdAt"]
     }
   },
   "firestore": {
@@ -73,6 +84,7 @@
     "/teams/{teamId}": { "schema": "team", "description": "Team definitions" },
     "/memberships/{membershipId}": { "schema": "membership", "description": "Team membership cross-reference" },
     "/projects/{projectId}": { "schema": "project", "description": "Project data" },
-    "/tasks/{taskId}": { "schema": "task", "description": "Task data" }
+    "/tasks/{taskId}": { "schema": "task", "description": "Task data" },
+    "/notes/{noteId}": { "schema": "note", "description": "Note data" }
   }
 }
